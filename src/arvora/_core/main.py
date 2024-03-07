@@ -117,6 +117,55 @@ class LoginPage(SimplePage):
         cls = h.DIV(form, Class="columns is-flex is-flex-direction-column")
         return cls
 
+class InteractionPage(SimplePage):
+    #Adicionando o init
+    def __init__(self, brython, menu=MENU_OPTIONS):
+        super().__init__(brython, menu, hero="main_hero")
+        self.form = self.text = None
+
+    def click(self, ev=None):
+        _ = self
+        ev.preventDefault()
+        form = ev.target
+        # USER_OPTIONS = form.elements["username"].value
+        Arvora.ARVORA.user(form.elements["username"].value)
+        SimplePage.PAGES["_MAIN_"].show()
+
+        # self.brython.alert(form.elements["username"].value, form.elements["password"])
+        # print(self.login.value, self.passd.type)
+
+    #construindo a página em si
+    def build_body(self):
+        h = self.brython.html
+
+        #um botão para enviar o formulário
+        btn = h.BUTTON("Enviar", Class="button has-background-grey-light is-4 block is-fullwidth", type="submit")
+
+        #O campo onde as pessoas pode escrever o texto delas, esse monte de tag é o bulma. Ela tem os placeholders e o rows que é a quantidade padrão de linhas
+        self.text = h.TEXTAREA(Id="text", Class="textarea is-light has-fixed-size block mb-4 mt-0 has-background-grey has-text-success-light is-medium", rows='17', type="text", placeholder="Comece a escrever aqui!")
+
+        #Aqui eu criei uma div para armazenar todos os componentes da página
+        div = h.DIV()
+            
+        #tit == titulo. Esse é o título da página
+        tit = h.H1("Escreva seu artigo", Class='title is-2 block hero p-2 has-text-white')
+
+        #aut == autor. Aqui que a pessoa pode botar o nome dela ((só uma ideia inicial))
+        aut = h.INPUT(placeholder='Autor', Id='input', Class='input is-light has-fixed-size block has-background-grey has-text-success-light is-medium')
+
+        #Aqui eu to adicionando tudo dentro da div, na ordem que eu quero que eles aparecam
+        div <= tit
+        div <= aut
+        div <= self.text
+
+        #aqui eu encapsulei a div com tudo e o botão em um formulário
+        form = h.FORM((div, btn), Class="column")
+        form.bind("submit", self.click)
+
+        #inte == interactions. aqui eu adicionei tudo isso em outra div
+        inte = h.DIV(form, Class="columns is-flex")
+        #Aqui eu to retornando a div com todos os elementos
+        return inte
 
 class Arvora:
     ARVORA = None
@@ -135,6 +184,7 @@ class Arvora:
         SimplePage.PAGES = {f"_{page}_": SimplePage(br) for page, _ in MENU_OPTIONS}
         SimplePage.PAGES["_MAIN_"] = LandingPage(br)
         SimplePage.PAGES["_LOGIN_"] = LoginPage(br)
+        SimplePage.PAGES['_INTERAÇÃO_'] = InteractionPage(br)
         _main = LandingPage(br)
         _main.show()
         return _main
