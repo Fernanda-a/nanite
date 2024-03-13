@@ -141,6 +141,26 @@ class KnowledgePage(SimplePage):
 
     def click(self, ev=None):
         _ = self
+        ev.preventDefault()
+        form = ev.target
+        
+        USER_OPTIONS = form.elements["button"].value
+        
+        form['Draft']
+        DraftPage.show(self)
+
+        form['Writing']
+        WritingPage.show(self)
+
+        # def click(self, ev=None):
+        # _ = self
+        # ev.preventDefault()
+        # form = ev.target
+        # # USER_OPTIONS = form.elements["username"].value
+        # Arvora.ARVORA.user(form.elements["username"].value)
+        # SimplePage.PAGES["_MAIN_"].show()
+
+        # form.bind("submit", self.click)
     #aqui quero adicionar um event listener e quando o botão for clicado eu quero abrir a página da classe WritingPage
     #document[''].bind("click", WritingPage )
         
@@ -191,6 +211,7 @@ class KnowledgePage(SimplePage):
         btn1 = h.BUTTON("Rascunho", Id='Draft', Class="button has-background-grey-light is-4 block is-fullwidth")
         btn2 = h.BUTTON("Escreva seu artigo", Id='Writing', Class="button has-background-grey-light is-4 block is-fullwidth")
         side_tab = h.DIV((btn2, btn1), Class='column is-3')
+        side_tab.bind("click", self.click)
 
         wrapper = h.DIV((side_tab, posts), Class="columns")
 
@@ -321,6 +342,8 @@ class Arvora:
         #SimplePage.PAGES['_PERGUNTAS_'] = QuestionsPage(br)
         SimplePage.PAGES["_CONHECIMENTO_"] = KnowledgePage(br)
         SimplePage.PAGES["_PESQUISA_"] = SearchPage(br)
+        KnowledgePage.build_body.btn1 = DraftPage(br)
+        KnowledgePage.build_body.btn2= WritingPage(br)
         _main = LandingPage(br)
         _main.show()
         return _main
