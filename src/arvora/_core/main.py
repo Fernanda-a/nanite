@@ -23,7 +23,7 @@ Changelog
 
 """
 #Então, basicamente ele está transformando essa string com esses nomes em duas listas de substrings e juntando elas com o zip, e depois, transformando elas em uma tupla dos elementos dessa junção das sublistas. Aqui tem as partes do menu. Uma tupla é uma sequência imutável de valores. A função zip combina duas listas, combina o primeiro elemento da lista 1 com o primeiro elememto da lista 2. A função slip faz com que a string se transforme em uma lista de substrings. 
-MENU_OPTIONS = tuple(zip("PROJETO CONHECIMENTO PESQUISA PERGUNTAS LOGIN USER TESTE".split(),
+MENU_OPTIONS = tuple(zip("PROJETO CONHECIMENTO PESQUISA PERGUNTAS LOGIN USER RASCUNHO ESCREVER".split(),
                      "bars-progress book book-medical question right-to-bracket user".split()))
 
 #Aqui uma base de página é criado. 
@@ -76,7 +76,6 @@ class SimplePage:
 
     def navigator(self, menu):
         h = self.brython.html
-
         def do_item(title=None, icon=None):
             spn = h.SPAN(
                 h.I(Class=f"fa fa-lg fa-{icon}", Id=f"-_{title}_-")+h.SPAN(title, Id=f"_{title}_-"),
@@ -139,47 +138,36 @@ class KnowledgePage(SimplePage):
     def __init__(self, brython, menu = MENU_OPTIONS):
         super().__init__(brython, menu, hero="main_hero")
 
-    def click(self, ev=None):
-        _ = self
-        ev.preventDefault()
-        form = ev.target
-        
-        USER_OPTIONS = form.elements["button"].value
-        
-        form['Draft']
-        DraftPage.show(self)
-
-        form['Writing']
-        WritingPage.show(self)
-
-        # def click(self, ev=None):
-        # _ = self
-        # ev.preventDefault()
-        # form = ev.target
-        # # USER_OPTIONS = form.elements["username"].value
-        # Arvora.ARVORA.user(form.elements["username"].value)
-        # SimplePage.PAGES["_MAIN_"].show()
-
-        # form.bind("submit", self.click)
     #aqui quero adicionar um event listener e quando o botão for clicado eu quero abrir a página da classe WritingPage
     #document[''].bind("click", WritingPage )
         
 
     def build_body(self):
         h = self.brython.html
-        usern = "Roberto"
-        userp = "@robertao_do_pix"
-        
-        #no card tem a foto do usuario o nome e arroba
-        #coloquei media_content pois n sei se haverão @ de usuario
-
+        document = self.brython.document
+        def click(ev):
+            print("Será???")
+            if ev.target.id == 'Draft':
+                SimplePage.PAGES["_RASCUNHO_"].show()
+            elif ev.target.id == 'Writing':
+                SimplePage.PAGES["_ESCREVER_"].show()
+        #
+        # #document["Draft"].bind("click", DraftPage)
+        #     document['Writing'].bind("click", WritingPage)
+        #
+        #     _ = self
+        #     ev.preventDefault()
+        #     form = ev.target
+        #     # USER_OPTIONS = form.elements["username"].value
+        #     Arvora.ARVORA.user(form.elements["username"].value)
+        #     SimplePage.PAGES["_MAIN_"].show()
 
         user_photo = h.FIGURE((h.IMG(src="https://res.cloudinary.com/ameo/image/upload/v1639144778/typocat_svbspx.png")), Class = "media-left image is-48x48")
 
-        user_name = h.P(usern, Class = "title is-4")
-        user_prof = h.P(userp, Class = "subtitle is-6")
-        media_content = h.DIV((user_name, user_prof), Class = "media-content")
-        head = h.DIV((user_photo, media_content), Class = "header media ")
+        # user_name = h.P(usern, Class = "title is-4")
+        # user_prof = h.P(userp, Class = "subtitle is-6")
+        # media_content = h.DIV((user_name, user_prof), Class = "media-content")
+        # head = h.DIV((user_photo, media_content), Class = "header media ")
 
         search_bar = h.FORM(h.DIV(h.INPUT(Id='local_search', Class='input is-white has-fixed-size block has-background-grey has-text-success-light mb-4 white-placeholder', placeholder='Pesquisar artigos'), Class='column'))
 
@@ -211,7 +199,7 @@ class KnowledgePage(SimplePage):
         btn1 = h.BUTTON("Rascunho", Id='Draft', Class="button has-background-grey-light is-4 block is-fullwidth")
         btn2 = h.BUTTON("Escreva seu artigo", Id='Writing', Class="button has-background-grey-light is-4 block is-fullwidth")
         side_tab = h.DIV((btn2, btn1), Class='column is-3')
-        side_tab.bind("click", self.click)
+        side_tab.bind("click", click)
 
         wrapper = h.DIV((side_tab, posts), Class="columns")
 
@@ -342,8 +330,8 @@ class Arvora:
         #SimplePage.PAGES['_PERGUNTAS_'] = QuestionsPage(br)
         SimplePage.PAGES["_CONHECIMENTO_"] = KnowledgePage(br)
         SimplePage.PAGES["_PESQUISA_"] = SearchPage(br)
-        KnowledgePage.build_body.btn1 = DraftPage(br)
-        KnowledgePage.build_body.btn2= WritingPage(br)
+        SimplePage.PAGES["_RASCUNHO_"] = DraftPage(br)
+        SimplePage.PAGES["_ESCREVER_"] = WritingPage(br)
         _main = LandingPage(br)
         _main.show()
         return _main
