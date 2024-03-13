@@ -139,6 +139,12 @@ class KnowledgePage(SimplePage):
     def __init__(self, brython, menu = MENU_OPTIONS):
         super().__init__(brython, menu, hero="main_hero")
 
+    def click(self, ev=None):
+        _ = self
+    #aqui quero adicionar um event listener e quando o botão for clicado eu quero abrir a página da classe WritingPage
+    #document[''].bind("click", WritingPage )
+        
+
     def build_body(self):
         h = self.brython.html
         usern = "Roberto"
@@ -155,7 +161,7 @@ class KnowledgePage(SimplePage):
         media_content = h.DIV((user_name, user_prof), Class = "media-content")
         head = h.DIV((user_photo, media_content), Class = "header media ")
 
-        search_bar = h.FORM(h.DIV(h.INPUT(Id='local_search', Class='input is-white has-fixed-size block has-background-grey has-text-success-light mb-4 white-placeholder', placeholder='Pesquisar'), Class='column'))
+        search_bar = h.FORM(h.DIV(h.INPUT(Id='local_search', Class='input is-white has-fixed-size block has-background-grey has-text-success-light mb-4 white-placeholder', placeholder='Pesquisar artigos'), Class='column'))
 
         # post_img = h.FIGURE(h.IMG(src="https://bulma.io/images/placeholders/256x256.png"), Class="card-image image is-4by3")
         # post_buttons = (h.BUTTON("Comentar", Class = "button is-primary"),
@@ -182,80 +188,118 @@ class KnowledgePage(SimplePage):
         
         posts = h.DIV((search_bar, toa), Class="column body-columns")
 
-        btn1 = h.BUTTON("Resumos", Class="button has-background-grey-light is-4 block is-fullwidth")
-        btn2 = h.BUTTON("Escreva seu artigo", Class="button has-background-grey-light is-4 block is-fullwidth")
+        btn1 = h.BUTTON("Rascunho", Id='Draft', Class="button has-background-grey-light is-4 block is-fullwidth")
+        btn2 = h.BUTTON("Escreva seu artigo", Id='Writing', Class="button has-background-grey-light is-4 block is-fullwidth")
         side_tab = h.DIV((btn2, btn1), Class='column is-3')
 
         wrapper = h.DIV((side_tab, posts), Class="columns")
 
         return wrapper
+class WritingPage(SimplePage):
+    #Adicionando o init
+    def __init__(self, brython, menu=MENU_OPTIONS):
+        super().__init__(brython, menu, hero="main_hero")
+        self.form = self.text = None
 
-# class QuestionsPage(SimplePage):
-#     def __init__(self, brython, menu=MENU_OPTIONS):
-#         super().__init__(brython, menu, hero="main_hero")
+    def click(self, ev=None):
+        _ = self
+        ev.preventDefault()
+        form = ev.target
+        # USER_OPTIONS = form.elements["username"].value
+        Arvora.ARVORA.user(form.elements["username"].value)
+        SimplePage.PAGES["_MAIN_"].show()
 
-#     def build_body(self):
-#         h = self.brython.html
-        #vamos começar a criar a parte das perguntas. Essa página terá quadrados mostrando perguntas que terão um título, e a pergunta mais relevante. Eu ainda quero botar um fadding.
-        #tit para título
-        # a = artigos do site
-        # b = perguntas
+        # self.brython.alert(form.elements["username"].value, form.elements["password"])
+        # print(self.login.value, self.passd.type)
 
-        # for i in a:
-        #     if b:
-        #         tit = titulo do artigo
-        #         qst = pergunta mais relavante
-        # #qst para question
-        # qst = 
-        
-    # #Adicionando o init
-    # def __init__(self, brython, menu=MENU_OPTIONS):
-    #     super().__init__(brython, menu, hero="main_hero")
-    #     self.form = self.text = None
+    #construindo a página em si
+    def build_body(self):
+        h = self.brython.html
 
-    # def click(self, ev=None):
-    #     _ = self
-    #     ev.preventDefault()
-    #     form = ev.target
-    #     # USER_OPTIONS = form.elements["username"].value
-    #     Arvora.ARVORA.user(form.elements["username"].value)
-    #     SimplePage.PAGES["_MAIN_"].show()
+        #um botão para enviar o formulário
+        btn1 = h.BUTTON("Enviar", Class="button has-background-grey-light is-4 block is-fullwidth", type="submit")
+        btn2 = h.BUTTON("Deletar", Class="button is-danger is-4 block is-fullwidth", type='submit')
 
-    #     # self.brython.alert(form.elements["username"].value, form.elements["password"])
-    #     # print(self.login.value, self.passd.type)
+        #O campo onde as pessoas pode escrever o texto delas, esse monte de tag é o bulma. Ela tem os placeholders e o rows que é a quantidade padrão de linhas
+        self.text = h.TEXTAREA(Class="textarea is-success has-fixed-size block mb-4 mt-0 has-background-grey has-text-success-light is-medium white-placeholder", rows='17', type="text", placeholder="Comece a escrever aqui!")
 
-    # #construindo a página em si
-    # def build_body(self):
-    #     h = self.brython.html
-
-    #     #um botão para enviar o formulário
-    #     btn = h.BUTTON("Enviar", Class="button has-background-grey-light is-4 block is-fullwidth", type="submit")
-
-    #     #O campo onde as pessoas pode escrever o texto delas, esse monte de tag é o bulma. Ela tem os placeholders e o rows que é a quantidade padrão de linhas
-    #     self.text = h.TEXTAREA(Class="textarea is-success has-fixed-size block mb-4 mt-0 has-background-grey has-text-success-light is-medium white-placeholder", rows='17', type="text", placeholder="Comece a escrever aqui!")
-
-    #     #Aqui eu criei uma div para armazenar todos os componentes da página
-    #     div = h.DIV()
+        #Aqui eu criei uma div para armazenar todos os componentes da página
+        div = h.DIV()
             
-    #     #tit == titulo. Esse é o título da página
-    #     tit = h.P("Escreva seu artigo", Class='title is-2 block hero p-2 has-text-white incText')
+        #tit == titulo. Esse é o título da página
+        tit = h.P("Escreva seu artigo", Class='title is-2 block hero p-2 has-text-white incText')
 
-    #     #aut == autor. Aqui que a pessoa pode botar o nome dela ((só uma ideia inicial))
-    #     aut = h.INPUT(placeholder='Autor', Class='input is-success has-fixed-size block has-background-grey has-text-success-light is-medium white-placeholder')
+        #aut == autor. Aqui que a pessoa pode botar o nome dela ((só uma ideia inicial))
+        aut = h.INPUT(placeholder='Autor', Class='input is-success has-fixed-size block has-background-grey has-text-success-light is-medium white-placeholder')
 
-    #     #Aqui eu to adicionando tudo dentro da div, na ordem que eu quero que eles aparecam
-    #     div <= tit
-    #     div <= aut
-    #     div <= self.text
+        #Aqui eu to adicionando tudo dentro da div, na ordem que eu quero que eles aparecam
+        div <= tit
+        div <= aut
+        div <= self.text
 
-    #     #aqui eu encapsulei a div com tudo e o botão em um formulário
-    #     form = h.FORM((div, btn), Class="column")
-    #     form.bind("submit", self.click)
+        #aqui eu encapsulei a div com tudo e o botão em um formulário
+        form = h.FORM((div, btn1, btn2), Class="column")
+        form.bind("submit", self.click)
 
-    #     #inte == interactions. aqui eu adicionei tudo isso em outra div
-    #     quest = h.DIV(form, Class="columns is-flex")
-    #     #Aqui eu to retornando a div com todos os elementos
-    #     return quest
+        #inte == interactions. aqui eu adicionei tudo isso em outra div
+        quest = h.DIV(form, Class="columns is-flex")
+        #Aqui eu to retornando a div com todos os elementos
+        return quest
+    
+class DraftPage(SimplePage):
+    def __init__(self, brython, menu = MENU_OPTIONS):
+        super().__init__(brython, menu, hero="main_hero")
+
+    def build_body(self):
+        h = self.brython.html
+
+        #exemplos de rascunho
+        drafts = [{"title":"Rascunho 1", "abstract": "resumo"}, {"title":"Rascunho 2", "abstract": "resumo 2"}, {"title":"Rascunho 3", "abstract": "resumo 3"}]
+        #todos os rascunhos
+        tor = []
+
+        for d in drafts:
+            title = d["title"]
+            abstract = d["abstract"]
+
+            tit = h.P(title, Class ='title is-4')
+            abst = h.P(abstract, Class='text is-6')
+            btnd = h.BUTTON("Deletar", Class="button is-danger is-4 block is-fullwidth", type='submit')
+            
+            #todos os rascunhos
+            tor.append(h.DIV((tit, abst, btnd), Class='box'))
+        
+        wrp = h.DIV(tor, Class="column body-columns")
+
+        return wrp
+    
+class SearchPage(SimplePage):
+    def __init__(self, brython, menu = MENU_OPTIONS):
+        super().__init__(brython, menu, hero="main_hero")
+
+    def build_body(self):
+        h = self.brython.html
+
+        search_bar = h.FORM(h.DIV(h.INPUT(Id='local_search', Class='input is-white has-fixed-size block has-background-grey has-text-success-light mb-4 white-placeholder', placeholder='Pesquise de tudo aqui!!'), Class='column'))
+
+        #exemplos de rascunho
+        drafts = [{"title":"Pesquisa 1", "abstract": "resumo"}, {"title":"Pesquisa 2", "abstract": "resumo 2"}, {"title":"Pesquisa 3", "abstract": "resumo 3"}]
+        #todos os rascunhos
+        tor = []
+
+        for d in drafts:
+            title = d["title"]
+            abstract = d["abstract"]
+
+            tit = h.P(title, Class ='title is-4')
+            abst = h.P(abstract, Class='text is-6')
+            
+            #todos os rascunhos
+            tor.append(h.DIV((tit, abst), Class='box'))
+        
+        wrapper = h.DIV((search_bar, tor), Class="column body-columns")
+
+        return wrapper
 
 class Arvora:
     ARVORA = None
@@ -274,12 +318,12 @@ class Arvora:
         SimplePage.PAGES = {f"_{page}_": SimplePage(br) for page, _ in MENU_OPTIONS}
         SimplePage.PAGES["_MAIN_"] = LandingPage(br)
         SimplePage.PAGES["_LOGIN_"] = LoginPage(br)
-       # SimplePage.PAGES['_PERGUNTAS_'] = QuestionsPage(br)
+        #SimplePage.PAGES['_PERGUNTAS_'] = QuestionsPage(br)
         SimplePage.PAGES["_CONHECIMENTO_"] = KnowledgePage(br)
+        SimplePage.PAGES["_PESQUISA_"] = SearchPage(br)
         _main = LandingPage(br)
         _main.show()
         return _main
-
 
 def main(br):
     return Arvora(br).start()
